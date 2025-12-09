@@ -9,6 +9,7 @@ import com.mercadolibre.ipcontext.exception.IpAddressIsBannedException;
 import com.mercadolibre.ipcontext.mapper.MapperCountryDto;
 import com.mercadolibre.ipcontext.service.IpBlacklistService;
 import com.mercadolibre.ipcontext.service.IpContextService;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,8 @@ public class IpContextServiceImpl implements IpContextService {
     private final MapperCountryDto mapperCountryDto;
 
     @Autowired
-    public IpContextServiceImpl(IpApiClient ipApiClient, GeographyApiClient geographyApiClient, FixerApiClient fixerApiClient, IpBlacklistService ipBlacklistService, MapperCountryDto mapperCountryDto) {
+    public IpContextServiceImpl(IpApiClient ipApiClient, GeographyApiClient geographyApiClient,
+            FixerApiClient fixerApiClient, IpBlacklistService ipBlacklistService, MapperCountryDto mapperCountryDto) {
         this.ipApiClient = ipApiClient;
         this.geographyApiClient = geographyApiClient;
         this.fixerApiClient = fixerApiClient;

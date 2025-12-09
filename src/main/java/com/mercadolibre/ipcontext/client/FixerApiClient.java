@@ -3,7 +3,9 @@ package com.mercadolibre.ipcontext.client;
 import com.mercadolibre.ipcontext.dto.fixerapi.FixerApiDto;
 import com.mercadolibre.ipcontext.exception.ClientApiErrorException;
 import com.mercadolibre.ipcontext.util.Utils;
+
 import lombok.extern.log4j.Log4j2;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,8 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-@Log4j2
 @Component
+@Log4j2
 public class FixerApiClient {
 
     private final String scheme;
@@ -24,11 +26,11 @@ public class FixerApiClient {
 
     @Autowired
     public FixerApiClient(@Value("${fixer-api.scheme}") String scheme,
-                          @Value("${fixer-api.host}") String host,
-                          @Value("${fixer-api.port}") Integer port,
-                          @Value("${fixer-api.path}") String path,
-                          @Value("${fixer-api.apikey}") String apikey,
-                          WebClient webClient) {
+            @Value("${fixer-api.host}") String host,
+            @Value("${fixer-api.port}") Integer port,
+            @Value("${fixer-api.path}") String path,
+            @Value("${fixer-api.apikey}") String apikey,
+            WebClient webClient) {
         this.scheme = scheme;
         this.host = host;
         this.path = path;
@@ -58,7 +60,8 @@ public class FixerApiClient {
                         response -> {
                             if (!response.success()) {
                                 log.error("FixerAPI status code is OK, there was an error.");
-                                throw new ClientApiErrorException("FixerAPI error - Response no success -> " + Utils.convertToJson(response));
+                                throw new ClientApiErrorException(
+                                        "FixerAPI error - Response no success -> " + Utils.convertToJson(response));
                             } else {
                                 log.info("FixerAPI OK body response -> {}", Utils.convertToJson(response));
                             }

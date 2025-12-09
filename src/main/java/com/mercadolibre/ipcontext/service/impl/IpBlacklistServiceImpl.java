@@ -6,6 +6,7 @@ import com.mercadolibre.ipcontext.mapper.MapperBlacklist;
 import com.mercadolibre.ipcontext.exception.IpAddressIsBannedException;
 import com.mercadolibre.ipcontext.repository.IpAddressBlacklistRepo;
 import com.mercadolibre.ipcontext.service.IpBlacklistService;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class IpBlacklistServiceImpl implements IpBlacklistService {
     private final MapperBlacklist mapperBlacklist;
 
     @Autowired
-    public IpBlacklistServiceImpl(IpAddressBlacklistRepo ipAddressBlacklistRepository, MapperBlacklist mapperBlacklist) {
+    public IpBlacklistServiceImpl(IpAddressBlacklistRepo ipAddressBlacklistRepository,
+            MapperBlacklist mapperBlacklist) {
         this.ipAddressBlacklistRepository = ipAddressBlacklistRepository;
         this.mapperBlacklist = mapperBlacklist;
     }

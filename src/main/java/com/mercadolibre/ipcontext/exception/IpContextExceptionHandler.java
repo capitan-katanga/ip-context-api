@@ -1,7 +1,5 @@
-package com.mercadolibre.ipcontext.handler;
+package com.mercadolibre.ipcontext.exception;
 
-import com.mercadolibre.ipcontext.exception.ClientApiErrorException;
-import com.mercadolibre.ipcontext.exception.IpAddressIsBannedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,7 +9,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @ControllerAdvice
-public class ControllerExceptionHandler {
+public class IpContextExceptionHandler {
 
     @ExceptionHandler({
             IpAddressIsBannedException.class,

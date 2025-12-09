@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MapperCountryDto {
-    public IpContextResponseDto toCountryInformationDto(IpApiDto ipApiDto, GeographyApiDto geographyApiDto, FixerApiDto fixerApiDto) {
+    public IpContextResponseDto toCountryInformationDto(IpApiDto ipApiDto, GeographyApiDto geographyApiDto,
+            FixerApiDto fixerApiDto) {
         return IpContextResponseDto.builder()
                 .ipAddress(ipApiDto.ip())
                 .countryName(ipApiDto.countryName())

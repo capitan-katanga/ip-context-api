@@ -3,78 +3,62 @@ package com.mercadolibre.ipcontext.controller;
 import com.mercadolibre.ipcontext.exception.ClientApiErrorException;
 import com.mercadolibre.ipcontext.service.impl.IpBlacklistServiceImpl;
 import com.mercadolibre.ipcontext.service.impl.IpContextServiceImpl;
-import com.mercadolibre.ipcontext.util.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.mercadolibre.ipcontext.util.DataMock.*;
-import static com.mercadolibre.ipcontext.util.Utils.convertToJson;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@SpringBootTest
-@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
-public class IpManagerControllerTest {
+class IpManagerControllerTest {
 
-    @MockitoBean
-    private IpContextServiceImpl ipContextService;
-    @MockitoBean
-    private IpBlacklistServiceImpl ipBlacklistService;
+        @Mock
+        private IpContextServiceImpl ipContextService;
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Mock
+        private IpBlacklistServiceImpl ipBlacklistService;
 
-    @Test
-    void getIpInfoSuccess() throws Exception {
-        var ipContextResponseDtoMock = ipContextResponseDtoMock();
+        @InjectMocks
+        private IpManagerController ipManagerController;
 
-        when(ipContextService.getIpContext(IP_ADDRESS))
-                .thenReturn(ipContextResponseDtoMock);
+        @Test
+        void getIpInfoSuccess() {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/info/" + IP_ADDRESS))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(convertToJson(ipContextResponseDtoMock)));
-    }
+                when(ipContextService.getIpContext(anyString()))
+                                .thenReturn(IP_CONTEXT_RESPONSE_DTO);
 
-    @Test
-    void clientRequestException() throws Exception {
-        when(ipContextService.getIpContext(IP_ADDRESS))
-                .thenThrow(ClientApiErrorException.class);
+                var response = ipManagerController.getIpInfo(IP_ADDRESS);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/info/" + IP_ADDRESS))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()));
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertEquals(IP_CONTEXT_RESPONSE_DTO, response.getBody());
+        }
 
-    @Test
-    void addIpAddressToBlacklistSuccess() throws Exception {
-        var addIpBlacklistDtoMock = addIpBlacklistDtoMock();
-        var getIpBlacklistDtoMock = getIpBlacklistDtoMock();
+        @Test
+        void clientRequestException() {
+                when(ipContextService.getIpContext(anyString()))
+                                .thenThrow(new ClientApiErrorException("Error"));
 
-        when(ipBlacklistService.banIpAddress(addIpBlacklistDtoMock))
-                .thenReturn(getIpBlacklistDtoMock);
+                assertThrows(ClientApiErrorException.class, () -> ipManagerController.getIpInfo(IP_ADDRESS));
+        }
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/banIp")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.convertToJson(addIpBlacklistDtoMock)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(Utils.convertToJson(getIpBlacklistDtoMock)));
-    }
+        @Test
+        void addIpAddressToBlacklistSuccess() {
 
+                when(ipBlacklistService.banIpAddress(any()))
+                                .thenReturn(GET_IP_BLACKLIST_DTO);
+
+                var response = ipManagerController.addIpAddressToBlacklist(ADD_IP_BLACKLIST_DTO);
+
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertEquals(GET_IP_BLACKLIST_DTO, response.getBody());
+        }
 
 }

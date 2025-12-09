@@ -17,7 +17,8 @@ import java.util.UUID;
 public class TraceFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         var httpServletRequest = (HttpServletRequest) servletRequest;
 
         var spanId = String.valueOf(System.currentTimeMillis());
